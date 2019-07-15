@@ -105,8 +105,30 @@ function removeTask(e) {
   if(e.target.parentElement.classList.contains('delete-item')) {
     if(confirm('Are You Sure?')) {
       e.target.parentElement.parentElement.remove();
+
+      // Remove from LocalStorage
+      removeTaskFromLocalStorage(e.target.parentElement.parentElement);      
     }
   }
+}
+
+// Remove from LocalStorage
+function removeTaskFromLocalStorage(taskItem) {
+  let tasks;
+  if(localStorage.getItem('tasks') === null){
+    tasks = [];
+  } else {
+    tasks = JSON.parse(localStorage.getItem('tasks'));
+  }
+
+  tasks.forEach(function(task, index){
+    //textContent is text in the field.
+    if(taskItem.textContent === task){
+      tasks.splice(index, 1);
+    }
+  });
+
+  localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
 // Clear Tasks
@@ -117,7 +139,15 @@ function clearTasks() {
   // Faster way
   while(taskList.firstChild) {
     taskList.removeChild(taskList.firstChild);
-  }  
+  }
+
+  //Clear from localStorage
+  clearTasksFromLocalStorage();  
+}
+
+// Clear Tasks from LocalStorage
+function clearTasksFromLocalStorage() {
+  localStorage.clear();
 }
 
 // Filter Tasks
